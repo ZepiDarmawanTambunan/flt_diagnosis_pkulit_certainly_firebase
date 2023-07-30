@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "776625824718",
+    "project_id": "flt-diagnosis-firebase",
+    "storage_bucket": "flt-diagnosis-firebase.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:776625824718:android:edce3a8b3ba260fbb3019f",
+        "android_client_info": {
+          "package_name": "com.sigmantic.flt_diagnosis"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "776625824718-jgb5ukiitvokb0f5vtj10sotepa3upkk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sigmantic.flt_diagnosis",
+            "certificate_hash": "395aac5c373855fc84e1b1ffa3ff49fda1e2f62c"
+          }
+        },
+        {
+          "client_id": "776625824718-47pg239p513hre0grncfoneb74up98ai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtwZHvxrCOTTXDVHUss9A0a4IpR1LTvSQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "776625824718-47pg239p513hre0grncfoneb74up98ai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
