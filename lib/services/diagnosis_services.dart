@@ -63,8 +63,12 @@ class DiagnosisService{
         return penyakitItem;
       }).toList();
       // Mengurutkan berdasarkan properti "cm" dari terbesar ke terkecil
-      penyakitList.sort((a, b) => (b["cm"] as double).compareTo(a["cm"] as double));
       print(penyakitList);
+      penyakitList.sort((a, b) {
+        double cmA = a["cm"] is int ? (a["cm"] as int).toDouble() : a["cm"] as double;
+        double cmB = b["cm"] is int ? (b["cm"] as int).toDouble() : b["cm"] as double;
+        return cmB.compareTo(cmA);
+      });
       return {"message": penyakitList,"status": true};
     } catch (e) {
       return {"message": 'Error saat mengambil data: $e', "status": false};

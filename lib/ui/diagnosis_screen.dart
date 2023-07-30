@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/services/diagnosis_services.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/detail_penyakit_screen.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/widgets/round_button.dart';
 import 'package:flutter/material.dart';
@@ -176,13 +177,44 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
           title: const Text('Hasil penyakit yang kemungkinan anda alami'),
           content: SingleChildScrollView(
             child: SizedBox(
-              height: 300,
-              width: 300,
+              height: 400,
+              width: 400,
               child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: penyakitList.length,
+                itemCount: penyakitList.length+1,
                 itemBuilder: (context, index) {
-                  return Text("${index+1}. Penyakit ${penyakitList[index]['nama']}: ${double.parse("${penyakitList[index]['cm']}").toStringAsFixed(2)}%");
+                  return index == penyakitList.length 
+                  ? Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text("catatan: perhitungan diatas didapat dari jawaban yang anda berikan kemudian dihitung menggunakan metode certianly factor sistem pakar (kemungkinan), Tetap direkomendasikan untuk berkonsultasi langsung kepada dokter", 
+                        style: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.red,
+                        ),
+                      ),
+                    )
+                  : GestureDetector(
+                    onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPenyakitScreen(
+                          penyakit: penyakitList[index]
+                        ),
+                      ),
+                    );
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.rectangle,
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text("${index+1}. Penyakit ${penyakitList[index]['nama']}: ${double.parse("${penyakitList[index]['cm']}").toStringAsFixed(2)}%"),
+                    ),
+                  );
                 },
               ),
             ),
