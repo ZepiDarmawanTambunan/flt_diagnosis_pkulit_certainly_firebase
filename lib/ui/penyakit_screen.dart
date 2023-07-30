@@ -13,9 +13,12 @@ class PenyakitScreen extends StatefulWidget {
 }
 
 class _PenyakitScreenState extends State<PenyakitScreen> {
+  final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   final kodeController = TextEditingController();
   final namaController = TextEditingController();
+  final penyebabController = TextEditingController();
+  final pengobatanController = TextEditingController();
   final fireStore = FirebaseFirestore.instance.collection('penyakit').snapshots();
   CollectionReference ref = FirebaseFirestore.instance.collection('penyakit');
 
@@ -70,12 +73,17 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
               onTap: () {
                 Navigator.pop(context);
                 showMyDialog(
-                    snapshot.data!.docs[index]['kode']
+                  kode: snapshot.data!.docs[index]['kode']
                         .toString(),
-                    snapshot.data!.docs[index]['nama']
+                  nama:  snapshot.data!.docs[index]['nama']
                         .toString(), 
-                    snapshot.data!.docs[index]['id']
-                        .toString(),);
+                  id:  snapshot.data!.docs[index]['id']
+                        .toString(),
+                  penyebab: snapshot.data!.docs[index]['penyebab']
+                        .toString(),
+                  pengobatan: snapshot.data!.docs[index]['pengobatan']
+                  .toString(),
+                  );
               },
               leading: const Icon(Icons.edit),
               title: const Text('Edit'),
@@ -166,31 +174,95 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
     );
   }
 
-  Future<void> showMyDialog(String kode, String nama, String id) async {
+  Future<void> showMyDialog({
+    required String id,
+    required String kode,
+    required String nama,
+    required String penyebab,
+    required String pengobatan
+  }) async {
     kodeController.text = kode;
     namaController.text = nama;
+    penyebabController.text = penyebab;
+    pengobatanController.text = pengobatan;
 
     return showDialog(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('Update'),
-        content: Container(
-          child: Column(
-            children: [
-              TextField(
-                controller: kodeController,
-                decoration: const InputDecoration(
-                  hintText: 'Kode',
+        content: SingleChildScrollView(
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [            
+                TextFormField(
+                  maxLines: 1,
+                  controller: kodeController,
+                  decoration: const InputDecoration(
+                    hintText: 'Kode',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Masukan kode!';
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              TextField(
-                controller: namaController,
-                decoration: const InputDecoration(
-                  hintText: 'nama',
+                const SizedBox(
+                  height: 10,
                 ),
-              ),
-            ],
+                TextFormField(
+                  maxLines: 2,
+                  controller: namaController,
+                  decoration: const InputDecoration(
+                    hintText: 'nama',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Masukan nama!';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  maxLines: 5,
+                  controller: penyebabController,
+                  decoration: const InputDecoration(
+                    hintText: 'penyebab',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Masukan penyebab!';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                  maxLines: 5,
+                  controller: pengobatanController,
+                  decoration: const InputDecoration(
+                    hintText: 'cara mengobati',
+                    border: OutlineInputBorder(),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Masukan cara mengobati!';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         actions: [
@@ -202,19 +274,21 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
-              ref.doc(id).update(
-                  {'kode': kodeController.text.toString(), 'nama': namaController.text.toString()}).then((value) {
-                Utils().toastMessage(
-                  message: 'Success',
-                  color: Colors.green,
-                );
-              }).onError((error, stackTrace) {
-                Utils().toastMessage(
-                  message: error.toString(),
-                  color: Colors.red,
-                );
-              });
+              if (_formKey.currentState!.validate()) {
+                Navigator.pop(context);
+                ref.doc(id).update(
+                    {'kode': kodeController.text.toString(), 'nama': namaController.text.toString()}).then((value) {
+                  Utils().toastMessage(
+                    message: 'Success',
+                    color: Colors.green,
+                  );
+                }).onError((error, stackTrace) {
+                  Utils().toastMessage(
+                    message: error.toString(),
+                    color: Colors.red,
+                  );
+                });
+              }
             },
             child: const Text('Update'),
           ),

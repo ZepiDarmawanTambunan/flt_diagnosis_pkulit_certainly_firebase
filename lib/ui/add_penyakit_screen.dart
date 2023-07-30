@@ -11,9 +11,12 @@ class AddPenyakitScreen extends StatefulWidget {
 }
 
 class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
+  final _formKey = GlobalKey<FormState>();
   bool loading = false;
   final kodeController = TextEditingController();
   final penyakitController = TextEditingController();
+  final penyebabController = TextEditingController();
+  final pengobatanController = TextEditingController();
   final fireStore = FirebaseFirestore.instance.collection('penyakit');
 
   @override
@@ -21,6 +24,81 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
     kodeController.dispose();
     penyakitController.dispose();
     super.dispose();
+  }
+
+  Widget form(){
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            maxLines: 1,
+            controller: kodeController,
+            decoration: const InputDecoration(
+              hintText: 'kode',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Masukan kode!';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            maxLines: 1,
+            controller: penyakitController,
+            decoration: const InputDecoration(
+              hintText: 'penyakit',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Masukan penyakit!';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            maxLines: 5,
+            controller: penyebabController,
+            decoration: const InputDecoration(
+              hintText: 'penyebab',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Masukan penyebab!';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            maxLines: 5,
+            controller: pengobatanController,
+            decoration: const InputDecoration(
+              hintText: 'Cara mengobati',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Masukan cara mengobati!';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -32,27 +110,12 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
+        child: ListView(
           children: [
             const SizedBox(
               height: 30,
             ),
-            TextFormField(
-              maxLines: 4,
-              controller: kodeController,
-              decoration: const InputDecoration(
-                hintText: 'kode',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            TextFormField(
-              maxLines: 4,
-              controller: penyakitController,
-              decoration: const InputDecoration(
-                hintText: 'penyakit',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            form(),
             const SizedBox(
               height: 30,
             ),
@@ -60,38 +123,44 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
               title: 'Add',
               loading: loading,
               onTap: () {
-                setState(() {
-                  loading = true;
-                });
-                String id = DateTime.now().millisecondsSinceEpoch.toString();
-                fireStore.doc(id).set({
-                  'id': id,
-                  'kode': kodeController.text.toString(),
-                  'nama': penyakitController.text.toString(),
-                }).then((value) {
-                  setState(() {
-                    loading = false;
-                    kodeController.text = "";
-                    penyakitController.text = "";
-                  });
-                  Utils().toastMessage(
-                    message: 'Success',
-                    color: Colors.green,
-                  );
-                }).onError((error, stackTrace) {
-                  setState(() {
-                    loading = false;
-                  });
-                  Utils().toastMessage(
-                    message: 'Success',
-                    color: Colors.red,
-                  );
-                });
+                if (_formKey.currentState!.validate()) {
+                  addPenyakit();
+                }
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void addPenyakit(){
+    setState(() {
+      loading = true;
+    });
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
+    fireStore.doc(id).set({
+      'id': id,
+      'kode': kodeController.text.toString(),
+      'nama': penyakitController.text.toString(),
+    }).then((value) {
+      setState(() {
+        loading = false;
+        kodeController.text = "";
+        penyakitController.text = "";
+      });
+      Utils().toastMessage(
+        message: 'Success',
+        color: Colors.green,
+      );
+    }).onError((error, stackTrace) {
+      setState(() {
+        loading = false;
+      });
+      Utils().toastMessage(
+        message: 'Success',
+        color: Colors.red,
+      );
+    });
   }
 }

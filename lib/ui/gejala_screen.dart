@@ -13,17 +13,18 @@ class GejalaScreen extends StatefulWidget {
 }
 
 class _GejalaScreenState extends State<GejalaScreen> {
+  final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
   final kodeController = TextEditingController();
   final namaController = TextEditingController();
   final fireStore = FirebaseFirestore.instance.collection('gejala').snapshots();
   CollectionReference ref = FirebaseFirestore.instance.collection('gejala');
 
-    @override
-  void initState() {
+  @override
+  void dispose() {
     kodeController.dispose();
     namaController.dispose();
-    super.initState();
+    super.dispose();
   }
 
   AppBar appBar(){
@@ -70,11 +71,11 @@ class _GejalaScreenState extends State<GejalaScreen> {
             onTap: () {
               Navigator.pop(context);
               showMyDialog(
-                  snapshot.data!.docs[index]['kode']
+                kode:  snapshot.data!.docs[index]['kode']
                       .toString(),
-                  snapshot.data!.docs[index]['nama']
+                nama:  snapshot.data!.docs[index]['nama']
                       .toString(), 
-                  snapshot.data!.docs[index]['id']
+                id:  snapshot.data!.docs[index]['id']
                       .toString(),);
             },
             leading: const Icon(Icons.edit),
@@ -171,7 +172,11 @@ class _GejalaScreenState extends State<GejalaScreen> {
     );
   }
 
-  Future<void> showMyDialog(String kode, String nama, String id) async {
+  Future<void> showMyDialog({
+    required String kode,
+    required String nama,
+    required String id
+  }) async {
     kodeController.text = kode;
     namaController.text = nama;
 
@@ -180,22 +185,44 @@ class _GejalaScreenState extends State<GejalaScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: const Text('Update'),
-            content: Container(
-              child: Column(
-                children: [
-                  TextField(
-                    controller: kodeController,
-                    decoration: const InputDecoration(
-                      hintText: 'Kode',
+            content: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    TextFormField(
+                      maxLines: 1,
+                      controller: kodeController,
+                      decoration: const InputDecoration(
+                        hintText: 'Kode',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Masukan kode!';
+                        }
+                        return null;
+                      },
                     ),
-                  ),
-                  TextField(
-                    controller: namaController,
-                    decoration: const InputDecoration(
-                      hintText: 'nama',
+                    const SizedBox(
+                      height: 10,
                     ),
-                  ),
-                ],
+                    TextFormField(
+                      maxLines: 2,
+                      controller: namaController,
+                      decoration: const InputDecoration(
+                        hintText: 'nama',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Masukan gejala!';
+                        }
+                        return null;
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
             actions: [
@@ -206,20 +233,22 @@ class _GejalaScreenState extends State<GejalaScreen> {
                 child: const Text('Cancel'),
               ),
               TextButton(
-                onPressed: () {
+                onPressed: () {                
+                  if (_formKey.currentState!.validate()) {
                   Navigator.pop(context);
-                  ref.doc(id).update(
-                      {'kode': kodeController.text.toString(), 'nama': namaController.text.toString()}).then((value) {
-                    Utils().toastMessage(
-                      message: 'Success',
-                      color: Colors.green,
-                    );
-                  }).onError((error, stackTrace) {
-                    Utils().toastMessage(
-                      message: error.toString(),
-                      color: Colors.red,
-                    );
-                  });
+                    ref.doc(id).update(
+                        {'kode': kodeController.text.toString(), 'nama': namaController.text.toString()}).then((value) {
+                      Utils().toastMessage(
+                        message: 'Success',
+                        color: Colors.green,
+                      );
+                    }).onError((error, stackTrace) {
+                      Utils().toastMessage(
+                        message: error.toString(),
+                        color: Colors.red,
+                      );
+                    });
+                  }
                 },
                 child: const Text('Update'),
               ),

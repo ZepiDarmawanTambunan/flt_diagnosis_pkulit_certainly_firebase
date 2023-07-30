@@ -11,6 +11,7 @@ class AddGejalaScreen extends StatefulWidget {
 }
 
 class _AddGejalaScreenState extends State<AddGejalaScreen> {
+  final _formKey = GlobalKey<FormState>();
   bool loading = false;
   final kodeController = TextEditingController();
   final gejalaController = TextEditingController();
@@ -21,6 +22,47 @@ class _AddGejalaScreenState extends State<AddGejalaScreen> {
     kodeController.dispose();
     gejalaController.dispose();
     super.dispose();
+  }
+
+  Widget form(){
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            maxLines: 1,
+            controller: kodeController,
+            decoration: const InputDecoration(
+              hintText: 'kode',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Masukan kode!';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          TextFormField(
+            maxLines: 2,
+            controller: gejalaController,
+            decoration: const InputDecoration(
+              hintText: 'gejala',
+              border: OutlineInputBorder(),
+            ),
+            validator: (value) {
+              if (value!.isEmpty) {
+                return 'Masukan gejala!';
+              }
+              return null;
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -37,22 +79,7 @@ class _AddGejalaScreenState extends State<AddGejalaScreen> {
             const SizedBox(
               height: 30,
             ),
-            TextFormField(
-              maxLines: 4,
-              controller: kodeController,
-              decoration: const InputDecoration(
-                hintText: 'kode',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            TextFormField(
-              maxLines: 4,
-              controller: gejalaController,
-              decoration: const InputDecoration(
-                hintText: 'gejala',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            form(),
             const SizedBox(
               height: 30,
             ),
@@ -60,38 +87,44 @@ class _AddGejalaScreenState extends State<AddGejalaScreen> {
               title: 'Add',
               loading: loading,
               onTap: () {
-                setState(() {
-                  loading = true;
-                });
-                String id = DateTime.now().millisecondsSinceEpoch.toString();
-                fireStore.doc(id).set({
-                  'id': id,
-                  'kode': kodeController.text.toString(),
-                  'nama': gejalaController.text.toString(),
-                }).then((value) {
-                  setState(() {
-                    loading = false;
-                    kodeController.text = "";
-                    gejalaController.text = "";
-                  });
-                  Utils().toastMessage(
-                    message: 'Success',
-                    color: Colors.green,
-                  );
-                }).onError((error, stackTrace) {
-                  setState(() {
-                    loading = false;
-                  });
-                  Utils().toastMessage(
-                    message: 'Success',
-                    color: Colors.red,
-                  );
-                });
+                if (_formKey.currentState!.validate()) {
+                  addGejala();
+                }
               },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void addGejala(){
+    setState(() {
+      loading = true;
+    });
+    String id = DateTime.now().millisecondsSinceEpoch.toString();
+    fireStore.doc(id).set({
+      'id': id,
+      'kode': kodeController.text.toString(),
+      'nama': gejalaController.text.toString(),
+    }).then((value) {
+      setState(() {
+        loading = false;
+        kodeController.text = "";
+        gejalaController.text = "";
+      });
+      Utils().toastMessage(
+        message: 'Success',
+        color: Colors.green,
+      );
+    }).onError((error, stackTrace) {
+      setState(() {
+        loading = false;
+      });
+      Utils().toastMessage(
+        message: 'Success',
+        color: Colors.red,
+      );
+    });
   }
 }
