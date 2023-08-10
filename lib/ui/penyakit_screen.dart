@@ -19,8 +19,7 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
   final namaController = TextEditingController();
   final penyebabController = TextEditingController();
   final pengobatanController = TextEditingController();
-  final fireStore = FirebaseFirestore.instance.collection('penyakit').snapshots();
-  CollectionReference ref = FirebaseFirestore.instance.collection('penyakit');
+  final penyakitStore = FirebaseFirestore.instance.collection('penyakit');
 
   @override
   void dispose() {
@@ -94,7 +93,7 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
             child: ListTile(
               onTap: () {                  
                 Navigator.pop(context);
-                ref.doc(snapshot.data!.docs[index]['id']
+                penyakitStore.doc(snapshot.data!.docs[index]['id']
                         .toString())
                     .delete()
                     .then((value) {
@@ -126,7 +125,7 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
           height: 10,
         ),
         StreamBuilder<QuerySnapshot>(
-            stream: fireStore,
+            stream: penyakitStore.snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -276,7 +275,7 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 Navigator.pop(context);
-                ref.doc(id).update(
+                penyakitStore.doc(id).update(
                     {'kode': kodeController.text.toString(), 'nama': namaController.text.toString()}).then((value) {
                   Utils().toastMessage(
                     message: 'Success',

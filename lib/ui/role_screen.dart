@@ -14,8 +14,7 @@ class RoleScreen extends StatefulWidget {
 
 class _RoleScreenState extends State<RoleScreen> {
   final auth = FirebaseAuth.instance;
-  final gejalaStore = FirebaseFirestore.instance.collection('penyakit').snapshots();
-  CollectionReference refGejala = FirebaseFirestore.instance.collection('penyakit');
+  final penyakitStore = FirebaseFirestore.instance.collection('penyakit');
 
     @override
   void initState() {
@@ -60,7 +59,7 @@ class _RoleScreenState extends State<RoleScreen> {
         height: 10,
       ),
       StreamBuilder<QuerySnapshot>(
-        stream: gejalaStore,
+        stream: penyakitStore.snapshots(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Expanded(

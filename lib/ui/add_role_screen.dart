@@ -63,6 +63,16 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
       ),
     ];
 
+  // List<DropdownMenuItem<double>> dropdownList = [];
+  // for (double value = 0.0; value <= 1.0; value += 0.1) {
+  //   dropdownList.add(
+  //     DropdownMenuItem(
+  //       value: value,
+  //       child: Text(value.toStringAsFixed(1)),
+  //     ),
+  //   );
+  // }
+
   @override
   void initState() {
     super.initState();

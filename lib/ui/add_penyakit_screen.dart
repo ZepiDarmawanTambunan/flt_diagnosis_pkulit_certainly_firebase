@@ -13,16 +13,18 @@ class AddPenyakitScreen extends StatefulWidget {
 class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  final kodeController = TextEditingController();
-  final penyakitController = TextEditingController();
-  final penyebabController = TextEditingController();
-  final pengobatanController = TextEditingController();
-  final fireStore = FirebaseFirestore.instance.collection('penyakit');
+  final kodeController = TextEditingController(); // P-N
+  final penyakitController = TextEditingController(); // PNAME
+  final penyebabController = TextEditingController(); // PENYEBAB
+  final pengobatanController = TextEditingController(); // PENGOBATAN
+  final penyakitStore = FirebaseFirestore.instance.collection('penyakit');
 
   @override
   void dispose() {
     kodeController.dispose();
     penyakitController.dispose();
+    penyebabController.dispose();
+    pengobatanController.dispose();
     super.dispose();
   }
 
@@ -139,7 +141,7 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
       loading = true;
     });
     String id = DateTime.now().millisecondsSinceEpoch.toString();
-    fireStore.doc(id).set({
+    penyakitStore.doc(id).set({
       'id': id,
       'kode': kodeController.text.toString(),
       'nama': penyakitController.text.toString(),

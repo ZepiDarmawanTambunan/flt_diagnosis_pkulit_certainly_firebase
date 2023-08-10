@@ -13,9 +13,9 @@ class AddGejalaScreen extends StatefulWidget {
 class _AddGejalaScreenState extends State<AddGejalaScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  final kodeController = TextEditingController();
-  final gejalaController = TextEditingController();
-  final fireStore = FirebaseFirestore.instance.collection('gejala');
+  final kodeController = TextEditingController(); //G-N
+  final gejalaController = TextEditingController(); //GNAME
+  final gejalaStore = FirebaseFirestore.instance.collection('gejala');
 
   @override
   void dispose() {
@@ -103,7 +103,7 @@ class _AddGejalaScreenState extends State<AddGejalaScreen> {
       loading = true;
     });
     String id = DateTime.now().millisecondsSinceEpoch.toString();
-    fireStore.doc(id).set({
+    gejalaStore.doc(id).set({
       'id': id,
       'kode': kodeController.text.toString(),
       'nama': gejalaController.text.toString(),

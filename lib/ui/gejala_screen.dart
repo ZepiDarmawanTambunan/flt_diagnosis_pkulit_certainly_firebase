@@ -15,10 +15,9 @@ class GejalaScreen extends StatefulWidget {
 class _GejalaScreenState extends State<GejalaScreen> {
   final _formKey = GlobalKey<FormState>();
   final auth = FirebaseAuth.instance;
-  final kodeController = TextEditingController();
-  final namaController = TextEditingController();
-  final fireStore = FirebaseFirestore.instance.collection('gejala').snapshots();
-  CollectionReference ref = FirebaseFirestore.instance.collection('gejala');
+  final kodeController = TextEditingController(); //G-N
+  final namaController = TextEditingController(); //GNAME
+  final gejalaStore = FirebaseFirestore.instance.collection('gejala');
 
   @override
   void dispose() {
@@ -87,7 +86,7 @@ class _GejalaScreenState extends State<GejalaScreen> {
           child: ListTile(
             onTap: () {
               Navigator.pop(context);
-              ref
+              gejalaStore
                   .doc(snapshot.data!.docs[index]['id']
                       .toString())
                   .delete()
@@ -135,7 +134,7 @@ class _GejalaScreenState extends State<GejalaScreen> {
           height: 10,
         ),
         StreamBuilder<QuerySnapshot>(
-            stream: fireStore,
+            stream: gejalaStore.snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -236,7 +235,7 @@ class _GejalaScreenState extends State<GejalaScreen> {
                 onPressed: () {                
                   if (_formKey.currentState!.validate()) {
                   Navigator.pop(context);
-                    ref.doc(id).update(
+                    gejalaStore.doc(id).update(
                         {'kode': kodeController.text.toString(), 'nama': namaController.text.toString()}).then((value) {
                       Utils().toastMessage(
                         message: 'Success',

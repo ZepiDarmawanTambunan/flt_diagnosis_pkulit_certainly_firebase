@@ -23,7 +23,7 @@ class DiagnosisService{
           }
         });
 
-        // cfSample = values {'G-1': 0.3 * cfpenyakit['G-1'], 'G-2': 0.8 * cfpenyakit['G-1'], 'G-3': 0.5 * cfpenyakit['G-1']}
+        // cfSample = values {'G-1': 0.3 * penyakitItem['G-1'], 'G-2': 0.8 * penyakitItem['G-1'], 'G-3': 0.5 * penyakitItem['G-1']}
         Map<String, dynamic> cfSample = {};
         values.forEach((key, value) {          
           var cfrule = penyakitItem['kode_gejala'][key];
