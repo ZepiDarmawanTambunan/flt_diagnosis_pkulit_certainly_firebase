@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/add_gejala_screen.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/login_screen.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/content/add_gejala_screen.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class GejalaScreen extends StatefulWidget {
-  const GejalaScreen({super.key});
+  final AppBar appBar;
+  const GejalaScreen({Key? key, required this.appBar}): super(key: key);
 
   @override
   State<GejalaScreen> createState() => _GejalaScreenState();
@@ -24,38 +24,6 @@ class _GejalaScreenState extends State<GejalaScreen> {
     kodeController.dispose();
     namaController.dispose();
     super.dispose();
-  }
-
-  AppBar appBar(){
-    return AppBar(
-      backgroundColor: Colors.green,
-      automaticallyImplyLeading: false,
-      centerTitle: true,
-      title: const Text('Gejala Screen'),
-      actions: [
-        IconButton(
-          onPressed: () {
-            auth.signOut().then((value) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
-            }).onError((error, stackTrace) {
-              Utils().toastMessage(
-                message: error.toString(),
-                color: Colors.red,
-              );
-            });
-          },
-          icon: const Icon(Icons.logout_outlined),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-      ],
-    );
   }
 
   Widget popMenu(int index, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -128,7 +96,7 @@ class _GejalaScreenState extends State<GejalaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: widget.appBar,
       body: Column(children: [
         const SizedBox(
           height: 10,

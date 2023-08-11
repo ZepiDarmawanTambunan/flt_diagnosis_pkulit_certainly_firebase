@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class AddRoleScreen extends StatefulWidget {
@@ -15,63 +16,8 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
   final gejalaStore = FirebaseFirestore.instance.collection('gejala').snapshots();
   late Stream<QuerySnapshot> role;
   StreamSubscription<QuerySnapshot>? roleListener;
-  List<Map<String, dynamic>> roleKodeGejalaList = [];
-  List<DropdownMenuItem<double>> dropdownList = [
-      const DropdownMenuItem(
-        value: 0.0,
-        child: Text('0.0'),
-      ),
-      const DropdownMenuItem(
-        value: 0.1,
-        child: Text('0.1'),
-      ),
-      const DropdownMenuItem(
-        value: 0.2,
-        child: Text('0.2'),
-      ),
-      const DropdownMenuItem(
-        value: 0.3,
-        child: Text('0.3'),
-      ),
-      const DropdownMenuItem(
-        value: 0.4,
-        child: Text('0.4'),
-      ),
-      const DropdownMenuItem(
-        value: 0.5,
-        child: Text('0.5'),
-      ),
-      const DropdownMenuItem(
-        value: 0.6,
-        child: Text('0.6'),
-      ),
-      const DropdownMenuItem(
-        value: 0.7,
-        child: Text('0.7'),
-      ),
-      const DropdownMenuItem(
-        value: 0.8,
-        child: Text('0.8'),
-      ),
-      const DropdownMenuItem(
-        value: 0.9,
-        child: Text('0.9'),
-      ),
-      const DropdownMenuItem(
-        value: 1.0,
-        child: Text('1.0'),
-      ),
-    ];
-
-  // List<DropdownMenuItem<double>> dropdownList = [];
-  // for (double value = 0.0; value <= 1.0; value += 0.1) {
-  //   dropdownList.add(
-  //     DropdownMenuItem(
-  //       value: value,
-  //       child: Text(value.toStringAsFixed(1)),
-  //     ),
-  //   );
-  // }
+  List<Map<String, dynamic>> penyakitCfRules = [];
+  List<DropdownMenuItem<double>> dropdownList = Utils().dropdownList();
 
   @override
   void initState() {
@@ -83,7 +29,7 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
     
     roleListener = role.listen((roleSnapshot) {
       setState(() {
-        roleKodeGejalaList = roleSnapshot.docs
+        penyakitCfRules = roleSnapshot.docs
             .map<Map<String, dynamic>>((roleDoc) {
               return {
                 'kode_gejala': roleDoc['kode_gejala'].toString(),
@@ -180,7 +126,7 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
                       itemBuilder: (context, index) {
                         String kodeGejala = snapshot.data!.docs[index]['kode'].toString();
                         String namaGejala = snapshot.data!.docs[index]['nama'].toString();
-                        Map<String, dynamic> thisRole = roleKodeGejalaList.firstWhere(
+                        Map<String, dynamic> thisRole = penyakitCfRules.firstWhere(
                           (element) =>
                               element['kode_gejala'] == kodeGejala &&
                               element['kode_penyakit'] == widget.kodePenyakit,
@@ -213,7 +159,7 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
             'params': params,
           });
         setState(() {
-          roleKodeGejalaList.where((element) =>
+          penyakitCfRules.where((element) =>
             element['kode_gejala'] == thisRole['kode_gejala'] &&
             element['kode_penyakit'] == widget.kodePenyakit
           ).forEach((matchingElement) {
@@ -240,7 +186,7 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
         
       // change data in array
       setState(() {
-        roleKodeGejalaList.where((element) =>
+        penyakitCfRules.where((element) =>
           element['kode_gejala'] == thisRole['kode_gejala'] &&
           element['kode_penyakit'] == widget.kodePenyakit
         ).forEach((matchingElement) {
@@ -255,7 +201,7 @@ class _AddRoleScreenState extends State<AddRoleScreen> {
           'checked': true,
         });
         setState(() {
-          roleKodeGejalaList.add({
+          penyakitCfRules.add({
             'kode_gejala': kodeGejala,
             'kode_penyakit': widget.kodePenyakit,
             'params': 0.0,

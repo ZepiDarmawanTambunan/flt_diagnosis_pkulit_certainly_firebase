@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/add_penyakit_screen.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/login_screen.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/content/add_penyakit_screen.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
 import 'package:flutter/material.dart';
 
 class PenyakitScreen extends StatefulWidget {
-  const PenyakitScreen({super.key});
+  final AppBar appBar;
+  const PenyakitScreen({Key? key, required this.appBar}): super(key: key);
 
   @override
   State<PenyakitScreen> createState() => _PenyakitScreenState();
@@ -26,38 +26,6 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
     kodeController.dispose();
     namaController.dispose();
     super.dispose();
-  }
-
-  AppBar appBar(){
-    return AppBar(
-      backgroundColor: Colors.green,
-      automaticallyImplyLeading: false,
-      centerTitle: true,
-      title: const Text('Penyakit Screen'),
-      actions: [
-        IconButton(
-          onPressed: () {
-            auth.signOut().then((value) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
-            }).onError((error, stackTrace) {
-              Utils().toastMessage(
-                message: error.toString(),
-                color: Colors.red,
-              );
-            });
-          },
-          icon: const Icon(Icons.logout_outlined),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-      ],
-    );
   }
 
   Widget popMenu(int index, AsyncSnapshot<QuerySnapshot> snapshot){
@@ -119,7 +87,7 @@ class _PenyakitScreenState extends State<PenyakitScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: widget.appBar,
       body: Column(children: [
         const SizedBox(
           height: 10,

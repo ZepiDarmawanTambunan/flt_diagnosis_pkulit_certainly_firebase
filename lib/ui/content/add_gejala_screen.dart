@@ -3,28 +3,24 @@ import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 
-class AddPenyakitScreen extends StatefulWidget {
-  const AddPenyakitScreen({Key? key}) : super(key: key);
+class AddGejalaScreen extends StatefulWidget {
+  const AddGejalaScreen({Key? key}) : super(key: key);
 
   @override
-  State<AddPenyakitScreen> createState() => _AddPenyakitScreenState();
+  State<AddGejalaScreen> createState() => _AddGejalaScreenState();
 }
 
-class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
+class _AddGejalaScreenState extends State<AddGejalaScreen> {
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  final kodeController = TextEditingController(); // P-N
-  final penyakitController = TextEditingController(); // PNAME
-  final penyebabController = TextEditingController(); // PENYEBAB
-  final pengobatanController = TextEditingController(); // PENGOBATAN
-  final penyakitStore = FirebaseFirestore.instance.collection('penyakit');
+  final kodeController = TextEditingController(); //G-N
+  final namaController = TextEditingController(); //GNAME
+  final gejalaStore = FirebaseFirestore.instance.collection('gejala');
 
   @override
   void dispose() {
     kodeController.dispose();
-    penyakitController.dispose();
-    penyebabController.dispose();
-    pengobatanController.dispose();
+    namaController.dispose();
     super.dispose();
   }
 
@@ -51,49 +47,15 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
             height: 10,
           ),
           TextFormField(
-            maxLines: 1,
-            controller: penyakitController,
+            maxLines: 2,
+            controller: namaController,
             decoration: const InputDecoration(
-              hintText: 'penyakit',
+              hintText: 'gejala',
               border: OutlineInputBorder(),
             ),
             validator: (value) {
               if (value!.isEmpty) {
-                return 'Masukan penyakit!';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            maxLines: 5,
-            controller: penyebabController,
-            decoration: const InputDecoration(
-              hintText: 'penyebab',
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Masukan penyebab!';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(
-            height: 10,
-          ),
-          TextFormField(
-            maxLines: 5,
-            controller: pengobatanController,
-            decoration: const InputDecoration(
-              hintText: 'Cara mengobati',
-              border: OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if (value!.isEmpty) {
-                return 'Masukan cara mengobati!';
+                return 'Masukan gejala!';
               }
               return null;
             },
@@ -108,11 +70,11 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: const Text('Add Penyakit'),
+        title: const Text('Add Gejala'),
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: ListView(
+        child: Column(
           children: [
             const SizedBox(
               height: 30,
@@ -126,7 +88,7 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
               loading: loading,
               onTap: () {
                 if (_formKey.currentState!.validate()) {
-                  addPenyakit();
+                  addGejala();
                 }
               },
             ),
@@ -136,20 +98,20 @@ class _AddPenyakitScreenState extends State<AddPenyakitScreen> {
     );
   }
 
-  void addPenyakit(){
+  void addGejala(){
     setState(() {
       loading = true;
     });
     String id = DateTime.now().millisecondsSinceEpoch.toString();
-    penyakitStore.doc(id).set({
+    gejalaStore.doc(id).set({
       'id': id,
       'kode': kodeController.text.toString(),
-      'nama': penyakitController.text.toString(),
+      'nama': namaController.text.toString(),
     }).then((value) {
       setState(() {
         loading = false;
         kodeController.text = "";
-        penyakitController.text = "";
+        namaController.text = "";
       });
       Utils().toastMessage(
         message: 'Success',

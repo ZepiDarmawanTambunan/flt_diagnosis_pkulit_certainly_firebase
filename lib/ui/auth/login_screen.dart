@@ -1,24 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/login_screen.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/auth/forgot_password.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/menu_screen.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/auth/register_screen.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/widgets/round_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   bool loading = false;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  @override
+    @override
   void dispose() {
     super.dispose();
     emailController.dispose();
@@ -76,74 +79,107 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+  Widget loginInfo(){
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Don't have an account?"),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const RegisterScreen(),
+              ),
+            );
+          },
+          child: const Text('Register now', 
+            style: TextStyle(color: Colors.green),
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: const Text('Register Screen'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            form(),
-            RoundButton(
-              loading: loading,
-              title: 'Sign Up',
-              onTap: () {
-                if (_formKey.currentState!.validate()) {
-                  register();
-                }
-              },
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text("Already have an account?"),
-                TextButton(
+    return WillPopScope(
+      onWillPop: () async {
+        SystemNavigator.pop();
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.green,
+          title: const Text('Login'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: ListView(
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.1,
+              ),
+              form(),
+              RoundButton(
+                loading: loading,
+                title: 'Login',
+                onTap: () {
+                  if (_formKey.currentState!.validate()) {
+                    login();
+                  }
+                },
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: TextButton(
                   onPressed: () {
-                    Navigator.pushReplacement(
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const LoginScreen(),
+                        builder: (context) => const ForgotPasswordScreen(),
                       ),
                     );
                   },
-                  child: const Text('Login', 
+                  child: const Text('Forgot Password', 
                     style: TextStyle(color: Colors.green),
                   ),
                 ),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              loginInfo(),
+              const SizedBox(
+                height: 30,
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void register() {
+   void login() {
     setState(() {
       loading = true;
     });
     _auth
-        .createUserWithEmailAndPassword(
+        .signInWithEmailAndPassword(
       email: emailController.text.toString(),
       password: passwordController.text.toString(),
     )
-    .then((value) {
-      Utils().toastMessage(
-        message: 'Success',
-        color: Colors.green,
-      );
+        .then((value) {
       setState(() {
         loading = false;
       });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const MenuScreen(),
+        ),
+      );
     }).onError((error, stackTrace) {
       Utils().toastMessage(
         message: error.toString(),

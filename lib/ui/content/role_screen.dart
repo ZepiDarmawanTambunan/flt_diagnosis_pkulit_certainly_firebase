@@ -1,12 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/add_role_screen.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/login_screen.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/content/add_role_screen.dart';
 import 'package:flutter/material.dart';
 
 class RoleScreen extends StatefulWidget {
-  const RoleScreen({super.key});
+  final AppBar appBar;
+  const RoleScreen({Key? key, required this.appBar}): super(key: key);
 
   @override
   State<RoleScreen> createState() => _RoleScreenState();
@@ -19,38 +18,6 @@ class _RoleScreenState extends State<RoleScreen> {
     @override
   void initState() {
     super.initState();
-  }
-
-  AppBar appBar(){
-    return AppBar(
-      backgroundColor: Colors.green,
-      automaticallyImplyLeading: false,
-      centerTitle: true,
-      title: const Text('Role Screen'),
-      actions: [
-        IconButton(
-          onPressed: () {
-            auth.signOut().then((value) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
-            }).onError((error, stackTrace) {
-              Utils().toastMessage(
-                message: error.toString(),
-                color: Colors.red,
-              );
-            });
-          },
-          icon: const Icon(Icons.logout_outlined),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-      ],
-    );
   }
 
   Widget body(){
@@ -108,7 +75,7 @@ class _RoleScreenState extends State<RoleScreen> {
    @override
    Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: widget.appBar,
       body: body(),
     );
   }

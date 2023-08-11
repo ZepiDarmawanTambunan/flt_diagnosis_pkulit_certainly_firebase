@@ -1,0 +1,11 @@
+v.0
+- setiap kali ingin akses account_screen maka di vscode pada bagian debug -> breakpoints uncheck all exception error
+
+v.1
+- perbaiki icon menu_screen
+- perbaiki account_screen untuk gambar pakai circular loading dan pakai stream
+- tampilkan image_profile dimenu_screen appbar
+- batasi fitur untuk admin dan yang bukan
+
+v.2
+- buatkan menu article seputar medis

@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/services/diagnosis_services.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/detail_penyakit_screen.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/utils/utils.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/content/detail_penyakit_screen.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/widgets/round_button.dart';
 import 'package:flutter/material.dart';
 
-import 'login_screen.dart';
 
 class DiagnosisScreen extends StatefulWidget {
-  const DiagnosisScreen({super.key});
+  final AppBar appBar;
+  const DiagnosisScreen({Key? key, required this.appBar}): super(key: key);
 
   @override
   State<DiagnosisScreen> createState() => _DiagnosisScreenState();
@@ -26,7 +25,7 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     {'text': 'Yakin', 'value': 0.8},
     {'text': 'Sangat Yakin', 'value': 1.0},
   ];
-  final Map<String, double> _selectedValues = {};
+  final Map<String, double> _selectedValues = {}; //[..., 'G-25': 0.4] cth
 
   List<Widget> buildAnswerChoices(String kodeGejala) {
     return answerChoices.map((answerChoice) {
@@ -69,41 +68,10 @@ class _DiagnosisScreenState extends State<DiagnosisScreen> {
     }).toList();
   }
 
-  AppBar appBar(){
-    return AppBar(
-      backgroundColor: Colors.green,
-      centerTitle: true,
-      title: const Text('Diagnosis Screen'),
-      actions: [
-        IconButton(
-          onPressed: () {
-            auth.signOut().then((value) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const LoginScreen(),
-                ),
-              );
-            }).onError((error, stackTrace) {
-              Utils().toastMessage(
-                message: error.toString(),
-                color: Colors.red,
-              );
-            });
-          },
-          icon: const Icon(Icons.logout_outlined),
-        ),
-        const SizedBox(
-          width: 10,
-        ),
-      ],
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(),
+      appBar: widget.appBar,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: StreamBuilder<QuerySnapshot>(

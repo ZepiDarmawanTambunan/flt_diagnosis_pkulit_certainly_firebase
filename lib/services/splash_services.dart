@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flt_diagnosis_tht_certainly_firebase/ui/login_screen.dart';
+import 'package:flt_diagnosis_tht_certainly_firebase/ui/auth/login_screen.dart';
 import 'package:flt_diagnosis_tht_certainly_firebase/ui/menu_screen.dart';
 import 'package:flutter/material.dart';
 
